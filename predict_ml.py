@@ -9,7 +9,7 @@ import pickle
 # Process label in list str library
 from ast import literal_eval
 
-from setting_be import num_labels, st_max_seqlen, st_batch_size, load_model, load_terms
+from setting_be import num_labels, st_max_seqlen, st_batch_size
 
 # # Load labels
 # lookup = tf.keras.layers.StringLookup(output_mode="multi_hot")
