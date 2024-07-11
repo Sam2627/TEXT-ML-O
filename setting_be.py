@@ -10,6 +10,6 @@ st_batch_size = 10     # Training size of dataset
 st_epochs = 15
 
 # Load model 
-# load_model = tf.keras.models.load_model('LearnML/model.keras')
+load_model = tf.keras.models.load_model('LearnML/model.keras')
 # Load terms
-# load_terms = pickle.load(open('LearnML/terms.pkl', 'rb'))
+load_terms = pickle.load(open('LearnML/terms.pkl', 'rb'))

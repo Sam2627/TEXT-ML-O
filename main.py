@@ -23,7 +23,7 @@ class TextInput(BaseModel):
 # Main page
 @app.get("/")
 def root():
-    return "Hello World."
+    return "Hello World ML."
 
 # Call train model
 @app.get("/train")

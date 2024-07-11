@@ -9,25 +9,25 @@ import pickle
 # Process label in list str library
 from ast import literal_eval
 
-from setting_be import num_labels
+from setting_be import num_labels, st_max_seqlen, st_batch_size, load_model, load_terms
 
-# Load labels
-lookup = tf.keras.layers.StringLookup(output_mode="multi_hot")
+# # Load labels
+# lookup = tf.keras.layers.StringLookup(output_mode="multi_hot")
 
-# Create data set with only row is text input
-max_seqlen = 6
-batch_size = 10
+# Dataset parameter
+max_seqlen = st_max_seqlen
+batch_size = st_batch_size
 padding_token = "<pad>"
 auto = tf.data.AUTOTUNE
 
-def make_dataset(dataframe, is_train=True):
-    labels = tf.ragged.constant(dataframe["MaCauHoi"].values)
-    label_binarized = lookup(labels).numpy()
-    dataset = tf.data.Dataset.from_tensor_slices(
-        (dataframe["CauHoi"].values, label_binarized)
-    )
-    dataset = dataset.shuffle(batch_size * 5) if is_train else dataset
-    return dataset.batch(batch_size)
+# def make_dataset(dataframe, is_train=True):
+#     labels = tf.ragged.constant(dataframe["MaCauHoi"].values)
+#     label_binarized = lookup(labels).numpy()
+#     dataset = tf.data.Dataset.from_tensor_slices(
+#         (dataframe["CauHoi"].values, label_binarized)
+#     )
+#     dataset = dataset.shuffle(batch_size * 5) if is_train else dataset
+#     return dataset.batch(batch_size)
 
 # Using predict model return list str labels
 def predict_input(input_text) -> list[str]:
@@ -37,10 +37,19 @@ def predict_input(input_text) -> list[str]:
     # Load models
     model_for_inference = tf.keras.models.load_model('LearnML/model.keras')
 
+    lookup = tf.keras.layers.StringLookup(output_mode="multi_hot")
     # Load terms
     terms = pickle.load(open('LearnML/terms.pkl', 'rb'))
     lookup.adapt(terms)
 
+    def make_dataset(dataframe, is_train=True):
+        labels = tf.ragged.constant(dataframe["MaCauHoi"].values)
+        label_binarized = lookup(labels).numpy()
+        dataset = tf.data.Dataset.from_tensor_slices(
+            (dataframe["CauHoi"].values, label_binarized)
+        )
+        dataset = dataset.shuffle(batch_size * 5) if is_train else dataset
+        return dataset.batch(batch_size)
 
     # Create data frame with input text
     pre_data = { "CauHoi": [input_text],
